@@ -1,8 +1,8 @@
 'use strict';
 
 const gridSize = {
-    m : 100, // horizontal length
-    n : 100 // vertical length
+    m : 10, // horizontal length
+    n : 10 // vertical length
 },
     matrix = [];
 
@@ -25,8 +25,7 @@ for (let i = 0; i < gridSize.n; i++) {
 for (let i = 0; i < (gridSize.m - 1) * gridSize.n; i++) {
 
     vertWalls.push({
-        id: i,
-        up: true
+        id: i
     });
 }
 
@@ -47,48 +46,48 @@ function selectRandomWall () {
 
     let index = getRandomInt(0, 1),
         id,
-        output,
-        bufferVertWallUp = [],
-        bufferHorizWallUp = [];
+        output = {
+            axis: null,
+            id : null
+        };
+        
+    //#region Ce bout de code sert à s'assurer que le tableau sélectionné contient bien au moins un mur. En l'enlevant, je n'ai pas vu d'erreur mais c'est une possibilité.
 
-    vertWalls.forEach(wall => {
+    // bufferVertWallUp = [],
+    // bufferHorizWallUp = [];
 
-        bufferVertWallUp.push(wall.up);
-    });
+    // vertWalls.forEach(wall => {
+
+    //     bufferVertWallUp.push(wall.up);
+    // });
             
-    horizWalls.forEach(wall => {
+    // horizWalls.forEach(wall => {
 
-        bufferHorizWallUp.push(wall.up);
-    });
+    //     bufferHorizWallUp.push(wall.up);
+    // });
 
-    bufferVertWallUp = [...new Set(bufferVertWallUp)];
-    bufferHorizWallUp = [...new Set(bufferHorizWallUp)];
+    // bufferVertWallUp = [...new Set(bufferVertWallUp)];
+    // bufferHorizWallUp = [...new Set(bufferHorizWallUp)];
 
-    if (!bufferVertWallUp.includes(true) || !bufferHorizWallUp.includes(true)) {
+    // if (!bufferVertWallUp.includes(true)) {
 
-        if (!bufferVertWallUp.includes(true)) {
+    //     index = 0;
+    // } else if (!bufferHorizWallUp.includes(true)) {
 
-            index = 1;
-        } else {
-
-            index = 0;
-        }
-    } 
+    //     index = 1;
+    // }
+    //#endregion    
 
     if (index == 0) {
 
         id = selectRandomVerticalWall();
 
-        output = {
-            axis: 'vertical'
-        };
+        output.axis = 'vertical';
     } else {
 
         id = selectRandomHorizontalWall();
 
-        output = {
-            axis: 'horizontal'
-        };
+        output.axis = 'horizontal';
     }
 
     output.id = id;
@@ -104,7 +103,6 @@ function selectRandomVerticalWall () {
     index = getRandomInt(0, vertWalls.length - 1);
     id = vertWalls[index].id;
 
-    // console.log(vertWalls);
     vertWalls.splice(index, 1);
 
     return id;
@@ -118,7 +116,6 @@ function selectRandomHorizontalWall () {
     index = getRandomInt(0, horizWalls.length - 1);
     id = horizWalls[index].id
 
-    // console.log(horizWalls);
     horizWalls.splice(index, 1);
 
     return id;
@@ -147,12 +144,9 @@ function selectCellPos () {
         }
 
         output = {
-            firstCellPos : {x: bufferX, y: bufferY},
             secondCellPos : {x: bufferX + 1, y: bufferY},
             axis: 'vertical'
         }
-
-        // console.log({bufferX, bufferY});
     } else if (axis == 'horizontal') {
 
         bufferX,
@@ -167,39 +161,30 @@ function selectCellPos () {
         }
 
         output = {
-            firstCellPos : {x: bufferX, y: bufferY},
             secondCellPos : {x: bufferX, y: bufferY + 1},
             axis: 'horizontal'
         }
-        // console.log(bufferX, bufferY);
     }
+
+    output.firstCellPos = {x: bufferX, y: bufferY};
 
     return output;
 }
 
-function getCellsObject (cellsPos) {
+function getCellsObject ({firstCellPos, secondCellPos}) {
 
-    let firstCell,
-    secondCell,
-    output;
+    let firstCell = matrix.find(obj => {
+        return obj.position.x === firstCellPos.x && obj.position.y === firstCellPos.y;
+    }),
+        secondCell = matrix.find(obj => {
+        return obj.position.x === secondCellPos.x && obj.position.y === secondCellPos.y;
+    }),
+        output;
 
-    matrix.forEach(cell => {
-
-        if (cell.position.x == cellsPos.firstCellPos.x && cell.position.y == cellsPos.firstCellPos.y) {
-
-            firstCell = cell;
-        } else if (cell.position.x == cellsPos.secondCellPos.x && cell.position.y == cellsPos.secondCellPos.y) {
-
-            secondCell = cell;
-        }
-    });
-
-    output = {
+    return output= {
         firstCell: firstCell,
         secondCell: secondCell
-    }
-
-    return output;
+    };
 }
 
 function verifyIds ({firstCell, secondCell}) {
@@ -214,8 +199,6 @@ function verifyIds ({firstCell, secondCell}) {
 
 function main() {
 
-    console.log('buffering');
-
     let cellsPos,
         cells,
         bufferMatrixIds = [];
@@ -223,7 +206,7 @@ function main() {
     do {
         
         cellsPos = selectCellPos();
-        // throw new Error("my error message");
+
         cells = getCellsObject(cellsPos);
     } while(!verifyIds(cells));
 
@@ -248,38 +231,22 @@ function main() {
 
         cells.firstCell.walls.east = false;
     }
-
-    // cells.secondCell.link.push(cells.firstCell);
-    // cells.firstCell.link.push(cells.secondCell);
 }
 
-var startTimestamp = new Date(),
-    step1;
+function createStartAndEnd () {
+
+    let randStart = getRandomInt(0, matrix.length),
+        randEnd = getRandomInt(0, matrix.length);
+
+    matrix[randStart].isStart = true;
+    matrix[randEnd].isEnd = true;
+}
 
 do {
 
     main();
 } while (matrixIds.length > 1);
 
-step1 = Date.now();
+createStartAndEnd();
 
-console.log(startTimestamp.getMinutes() + ':' + startTimestamp.getSeconds() + ':' + startTimestamp.getMilliseconds());
-console.log('step1', ((step1 - startTimestamp) / 1000) + 's');
-
-// location.reload();
-
-// let complexity = 0;
-
-// matrix.forEach(cell => {
-
-//     if (cell.link.length > 2) {
-
-//         complexity++;
-//     }
-// });
-
-// console.log(vertWalls);
-// console.log(horizWalls);
-
-// console.log(complexity);
-// console.log(matrix);
+console.log(matrix);

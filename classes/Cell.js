@@ -3,12 +3,13 @@
 class Cell {
 
     position;
-    link = [];
     id;
     walls = {
         east: true,
         south: true
     };
+    isStart = false;
+    isEnd = false;
     
     constructor (x, y, id) {
 

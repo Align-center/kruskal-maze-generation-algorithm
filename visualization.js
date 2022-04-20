@@ -16,7 +16,17 @@ document.addEventListener('DOMContentLoaded', function loaded() {
 
     matrix.forEach(cell => {
 
-        // ctx.rect(cell.position.x * dimensions, cell.position.y * dimensions, dimensions, dimensions);
+        if (cell.isStart) {
+
+            ctx.fillStyle= 'hsl(127, 60%, 50%)';
+            ctx.fillRect(cell.position.x * dimensions, cell.position.y * dimensions, dimensions, dimensions);
+        }
+
+        if (cell.isEnd) {
+            
+            ctx.fillStyle= 'hsl(5, 60%, 50%)';
+            ctx.fillRect(cell.position.x * dimensions, cell.position.y * dimensions, dimensions, dimensions);
+        }
 
         if (cell.walls.east) {
             
@@ -29,11 +39,6 @@ document.addEventListener('DOMContentLoaded', function loaded() {
             ctx.moveTo(cell.position.x * dimensions, cell.position.y * dimensions + dimensions);
             ctx.lineTo(cell.position.x * dimensions + dimensions, cell.position.y * dimensions + dimensions);
         }
-
-        // ctx.moveTo(cell.position.x * dimensions, cell.position.y * dimensions);
-        // ctx.lineTo(cell.position.x * dimensions + dimensions, cell.position.y * dimensions);
-        // ctx.moveTo(cell.position.x * dimensions, cell.position.y * dimensions);
-        // ctx.lineTo(cell.position.x * dimensions, cell.position.y * dimensions + dimensions);
     });
 
     ctx.stroke();
