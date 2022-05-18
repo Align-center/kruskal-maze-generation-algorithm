@@ -222,11 +222,11 @@ function main() {
         bufferMatrixIds.push(cell.id);
     });
 
-    console.log(bufferMatrixIds);
+    // console.log(bufferMatrixIds);
 
     matrixIds = [...new Set(bufferMatrixIds)];
 
-    console.log(matrixIds);
+    // console.log(matrixIds);
 
     if (cellsPos.axis == 'horizontal') {
 
