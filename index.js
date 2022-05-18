@@ -1,8 +1,8 @@
 'use strict';
 
 const gridSize = {
-    m : 10, // horizontal length
-    n : 10 // vertical length
+    m : 100, // horizontal length
+    n : 100 // vertical length
 },
     matrix = [];
 
@@ -222,7 +222,11 @@ function main() {
         bufferMatrixIds.push(cell.id);
     });
 
+    console.log(bufferMatrixIds);
+
     matrixIds = [...new Set(bufferMatrixIds)];
+
+    console.log(matrixIds);
 
     if (cellsPos.axis == 'horizontal') {
 
